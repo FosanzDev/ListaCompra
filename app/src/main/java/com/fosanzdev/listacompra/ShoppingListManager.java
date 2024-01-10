@@ -47,4 +47,13 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
         }
         return result;
     }
+
+    @Override
+    public boolean add(ShoppingList shoppingList) {
+        boolean result = super.add(shoppingList);
+        if (result) {
+            new ShoppingListDAO(db).insert(shoppingList);
+        }
+        return result;
+    }
 }

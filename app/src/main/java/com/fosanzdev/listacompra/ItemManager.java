@@ -34,4 +34,13 @@ public class ItemManager extends ArrayList<Item> {
         }
         return result;
     }
+
+    @Override
+    public boolean add(Item item) {
+        boolean result = super.add(item);
+        if (result) {
+            new ItemDAO(db).insert(item);
+        }
+        return result;
+    }
 }
