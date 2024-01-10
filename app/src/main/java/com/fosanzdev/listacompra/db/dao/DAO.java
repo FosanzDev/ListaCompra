@@ -12,17 +12,22 @@ public abstract class DAO<T> {
     protected SQLiteDatabase db;
     protected final HashMap<String, Integer> columnIndex;
 
-    DAO(String tableName) {
+    DAO(String tableName, SQLiteDatabase db) {
         this.tableName = tableName;
-        columnIndex = new HashMap<>();
-        fillColumnIndex();
+        this.db = db;
+        this.columnIndex = fillColumnIndex(this.tableName);
     }
 
-    private void fillColumnIndex() {
-        Cursor c = db.rawQuery("SELECT * FROM " + tableName, null);
-        for (String columnName : c.getColumnNames()) {
-            columnIndex.put(columnName, c.getColumnIndex(columnName));
+    protected HashMap<String, Integer> fillColumnIndex(String tableName) {
+        HashMap<String, Integer> columnIndex = new HashMap<>();
+        try (Cursor c = db.rawQuery("SELECT * FROM " + tableName, null)) {
+            if (c.moveToFirst()) {
+                for (String columnName : c.getColumnNames()) {
+                    columnIndex.put(columnName, c.getColumnIndex(columnName));
+                }
+            }
         }
+        return columnIndex;
     }
 
     private String tableName;

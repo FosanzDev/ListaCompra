@@ -2,12 +2,13 @@ package com.fosanzdev.listacompra;
 
 import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShoppingList {
 
     private int id;
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
     private String nombre;
     private ShoppingListManager manager;
 
@@ -15,9 +16,8 @@ public class ShoppingList {
     public ShoppingList() {
     }
 
-    public ShoppingList(String nombre, ShoppingListManager manager) {
+    public ShoppingList(String nombre) {
         this.nombre = nombre;
-        this.manager = manager;
     }
 
     public ShoppingList(int id, List<Item> items, String nombre) {
@@ -68,5 +68,14 @@ public class ShoppingList {
 
     public String getNombre() {
         return nombre;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(nombre);
+        sb.append(" (");
+        sb.append(items.size());
+        sb.append(" items)");
+        return sb.toString();
     }
 }

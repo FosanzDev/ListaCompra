@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.db.dao.CategoryDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryManager extends ArrayList<Category> {
 
@@ -21,8 +22,11 @@ public class CategoryManager extends ArrayList<Category> {
      */
     private void init() {
         CategoryDAO dao = new CategoryDAO(db);
-        for (Category category : dao.findAll()) {
-            add(category);
+        List<Category> categories = dao.findAll();
+        if (categories != null) {
+            for (Category category : categories) {
+                addSilent(category);
+            }
         }
     }
 
@@ -33,6 +37,10 @@ public class CategoryManager extends ArrayList<Category> {
             new CategoryDAO(db).delete((Category) o);
         }
         return result;
+    }
+
+    private void addSilent(Category category) {
+        super.add(category);
     }
 
     @Override

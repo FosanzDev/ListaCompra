@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.Item;
 import com.fosanzdev.listacompra.ShoppingList;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,8 +15,12 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     private static final String TABLE_NAME = "ShoppingList";
 
+    private final HashMap<String, Integer> shoppingListItemsColumnIndex = super.fillColumnIndex("ShoppingListItems");
+
     public ShoppingListDAO(SQLiteDatabase db) {
-        super(TABLE_NAME);
+        super(TABLE_NAME, db);
+        System.out.println("ShoppingListDAO created");
+        System.out.println(columnIndex);
     }
 
     /**
@@ -41,7 +47,7 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
      */
     @Override
     public List<ShoppingList> findAll() {
-        List<ShoppingList> shoppingLists = null;
+        List<ShoppingList> shoppingLists = new ArrayList<>();
         try (Cursor c = db.rawQuery("SELECT * FROM ShoppingList", null)) {
             if (c.moveToFirst()) {
                 do {
@@ -57,7 +63,7 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     @Override
     public List<ShoppingList> findBy(Map<String, String> condition) {
-        List<ShoppingList> shoppingLists = null;
+        List<ShoppingList> shoppingLists = new ArrayList<>();
         String[] args = new String[condition.size()];
         int i = 0;
         StringBuilder query = new StringBuilder("SELECT * FROM ShoppingList WHERE ");
@@ -117,10 +123,10 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
         String query = "SELECT * FROM ShoppingListItems WHERE fk_shopping_list = ?";
         String[] args = new String[]{String.valueOf(shoppingListId)};
         try (Cursor c = db.rawQuery(query, args)) {
-            List<Item> items = null;
+            List<Item> items = new ArrayList<>();
             if (c.moveToFirst()) {
                 do {
-                    items.add(new ItemDAO(db).findById(c.getInt(columnIndex.get("fk_item"))));
+                    items.add(new ItemDAO(db).findById(c.getInt(shoppingListItemsColumnIndex.get("fk_item"))));
                 } while (c.moveToNext());
             }
             return items;
@@ -137,6 +143,9 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     public boolean insertAllItems(ShoppingList shoppingList, List<Item> items){
         String query = "INSERT INTO ShoppingListItems (fk_shopping_list, fk_item) VALUES (?, ?)";
+        if (items == null) {
+            return false;
+        }
         for (Item item : items) {
             String[] args = new String[]{String.valueOf(shoppingList.getId()), String.valueOf(item.getId())};
             try (Cursor c = db.rawQuery(query, args)) {

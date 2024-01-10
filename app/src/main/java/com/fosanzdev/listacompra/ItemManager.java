@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.db.dao.ItemDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemManager extends ArrayList<Item> {
 
@@ -21,8 +22,11 @@ public class ItemManager extends ArrayList<Item> {
      */
     private void init(){
         ItemDAO dao = new ItemDAO(db);
-        for (Item item : dao.findAll()) {
-            add(item);
+        List<Item> items = dao.findAll();
+        if (items != null) {
+            for (Item item : items) {
+                addSilent(item);
+            }
         }
     }
 
@@ -33,6 +37,10 @@ public class ItemManager extends ArrayList<Item> {
             new ItemDAO(db).delete((Item) o);
         }
         return result;
+    }
+
+    private void addSilent(Item item) {
+        super.add(item);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class CategoryDAO extends DAO<Category> {
 
 
     public CategoryDAO(SQLiteDatabase db) {
-        super(TABLE_NAME);
+        super(TABLE_NAME, db);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class CategoryDAO extends DAO<Category> {
 
     @Override
     public List<Category> findAll() {
-        List<Category> categories = null;
+        List<Category> categories = new ArrayList<>();
         try (Cursor c = db.rawQuery("SELECT * FROM Categories", null)) {
             if (c.moveToFirst()) {
                 do {
@@ -48,7 +49,7 @@ public class CategoryDAO extends DAO<Category> {
 
     @Override
     public List<Category> findBy(Map<String, String> condition) {
-        List<Category> categories = null;
+        List<Category> categories = new ArrayList<>();
         String[] args = new String[condition.size()];
         int i = 0;
         StringBuilder query = new StringBuilder("SELECT * FROM Categories WHERE ");

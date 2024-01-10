@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShoppingListManager extends ArrayList<ShoppingList> {
 
@@ -21,9 +22,12 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
      */
     private void init(){
         ShoppingListDAO dao = new ShoppingListDAO(db);
-        for (ShoppingList shoppingList : dao.findAll()) {
-            add(shoppingList);
-            shoppingList.setManager(this);
+        List<ShoppingList> shoppingLists = dao.findAll();
+        if (shoppingLists != null) {
+            for (ShoppingList shoppingList : shoppingLists) {
+                addSilent(shoppingList);
+                shoppingList.setManager(this);
+            }
         }
     }
 
@@ -42,15 +46,21 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
     @Override
     public boolean remove(Object o) {
         boolean result = super.remove(o);
+        ((ShoppingList)o).setManager(null);
         if (result) {
             new ShoppingListDAO(db).delete((ShoppingList) o);
         }
         return result;
     }
 
+    private void addSilent(ShoppingList shoppingList) {
+        super.add(shoppingList);
+    }
+
     @Override
     public boolean add(ShoppingList shoppingList) {
         boolean result = super.add(shoppingList);
+        shoppingList.setManager(this);
         if (result) {
             new ShoppingListDAO(db).insert(shoppingList);
         }
