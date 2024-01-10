@@ -13,7 +13,7 @@ public class CategoryDAO extends DAO<Category> {
     private static final String TABLE_NAME = "Categories";
 
 
-    CategoryDAO(SQLiteDatabase db) {
+    public CategoryDAO(SQLiteDatabase db) {
         super(TABLE_NAME);
     }
 

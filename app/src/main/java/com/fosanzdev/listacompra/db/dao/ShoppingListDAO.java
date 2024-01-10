@@ -1,6 +1,7 @@
 package com.fosanzdev.listacompra.db.dao;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.Item;
 import com.fosanzdev.listacompra.ShoppingList;
@@ -12,7 +13,7 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     private static final String TABLE_NAME = "ShoppingList";
 
-    public ShoppingListDAO(String tableName) {
+    public ShoppingListDAO(SQLiteDatabase db) {
         super(TABLE_NAME);
     }
 
