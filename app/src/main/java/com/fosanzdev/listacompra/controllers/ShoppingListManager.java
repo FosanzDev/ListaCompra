@@ -7,6 +7,7 @@ import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ShoppingListManager extends ArrayList<ShoppingList> {
@@ -65,6 +66,18 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
         shoppingList.setManager(this);
         if (result) {
             new ShoppingListDAO(db).insert(shoppingList);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends ShoppingList> c) {
+        boolean result = super.addAll(c);
+        if (result) {
+            for (ShoppingList shoppingList : c) {
+                shoppingList.setManager(this);
+                new ShoppingListDAO(db).insert(shoppingList);
+            }
         }
         return result;
     }

@@ -95,6 +95,12 @@ public class CategoryDAO extends DAO<Category> {
         String query = "INSERT INTO Categories (nombre, b64Image) VALUES (?, ?)";
         String[] args = new String[]{category.getNombre(), category.getB64Image()};
         try (Cursor c = db.rawQuery(query, args)) {
+            query = "SELECT id from Categories ORDER BY id DESC LIMIT 1";
+            try (Cursor c2 = db.rawQuery(query, null)) {
+                if (c2.moveToFirst()) {
+                    category.setId(c2.getInt(0));
+                }
+            }
             return c.moveToFirst();
         }
     }

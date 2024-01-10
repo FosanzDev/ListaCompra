@@ -7,6 +7,7 @@ import com.fosanzdev.listacompra.models.Category;
 import com.fosanzdev.listacompra.models.Item;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ItemManager extends ArrayList<Item> {
@@ -50,6 +51,17 @@ public class ItemManager extends ArrayList<Item> {
         boolean result = super.add(item);
         if (result) {
             new ItemDAO(db).insert(item);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Item> c) {
+        boolean result = super.addAll(c);
+        if (result) {
+            for (Item item : c) {
+                new ItemDAO(db).insert(item);
+            }
         }
         return result;
     }

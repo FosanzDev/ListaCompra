@@ -97,6 +97,12 @@ public class ItemDAO extends DAO<Item> {
         String query = "INSERT INTO Items (nombre, fk_category, b64Image) VALUES (?, ?, ?)";
         String[] args = new String[]{item.getNombre(), String.valueOf(item.getCategory().getId()), item.getB64Image()};
         try (Cursor c = db.rawQuery(query, args)) {
+            query = "SELECT id FROM Categories ORDER BY id DESC LIMIT 1";
+            try (Cursor c2 = db.rawQuery(query, null)) {
+                if (c2.moveToFirst()) {
+                    item.setId(c2.getInt(0));
+                }
+            }
             return c.moveToFirst();
         }
     }

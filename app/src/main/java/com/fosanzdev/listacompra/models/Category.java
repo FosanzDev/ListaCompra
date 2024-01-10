@@ -22,6 +22,10 @@ public class Category {
         this.b64Image = b64Image;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }

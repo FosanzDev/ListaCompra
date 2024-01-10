@@ -6,6 +6,7 @@ import com.fosanzdev.listacompra.db.dao.CategoryDAO;
 import com.fosanzdev.listacompra.models.Category;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CategoryManager extends ArrayList<Category> {
@@ -49,6 +50,17 @@ public class CategoryManager extends ArrayList<Category> {
         boolean result = super.add(category);
         if (result) {
             new CategoryDAO(db).insert(category);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Category> c) {
+        boolean result = super.addAll(c);
+        if (result) {
+            for (Category category : c) {
+                new CategoryDAO(db).insert(category);
+            }
         }
         return result;
     }

@@ -11,6 +11,8 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "shoppinglist.db";
     private static final int DATABASE_VERSION = 1;
 
+    public static boolean initialized = true;
+
     private static final String SQL_CREATE_TABLE_CATEGORIES =
             "CREATE TABLE Categories (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -36,11 +38,11 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_TABLE_SHOPPING_LIST_ITEMS =
             "CREATE TABLE ShoppingListItems (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "fk_shopping_list INTEGER NOT NULL," +
                     "fk_item INTEGER NOT NULL," +
                     "FOREIGN KEY (fk_shopping_list) REFERENCES ShoppingList(id)," +
-                    "FOREIGN KEY (fk_item) REFERENCES Items(id)" +
+                    "FOREIGN KEY (fk_item) REFERENCES Items(id)," +
+                    "PRIMARY KEY (fk_shopping_list, fk_item)" +
                     ");";
 
 
@@ -61,6 +63,7 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_ITEMS);
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST);
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST_ITEMS);
+        initialized = false;
     }
 
     @Override
