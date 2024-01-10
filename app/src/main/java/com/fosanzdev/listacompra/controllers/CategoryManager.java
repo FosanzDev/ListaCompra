@@ -52,4 +52,13 @@ public class CategoryManager extends ArrayList<Category> {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Category category : this) {
+            sb.append(category.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }

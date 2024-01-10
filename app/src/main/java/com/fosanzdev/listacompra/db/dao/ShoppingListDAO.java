@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +37,8 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
             if (c.moveToFirst()) {
                 String nombre = c.getString(columnIndex.get("nombre"));
                 List<Item> items = getAllItemsById(id);
-                return new ShoppingList(id, items, nombre);
+                Date date = new Date(c.getLong(columnIndex.get("date")));
+                return new ShoppingList(id, items, nombre, date);
             }
         }
         return null;
@@ -54,7 +57,8 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
                     String nombre = c.getString(columnIndex.get("nombre"));
                     int id = c.getInt(columnIndex.get("id"));
                     List<Item> items = getAllItemsById(id);
-                    shoppingLists.add(new ShoppingList(id, items, nombre));
+                    Date date = new Date(c.getLong(columnIndex.get("date")));
+                    shoppingLists.add(new ShoppingList(id, items, nombre, date));
                 } while (c.moveToNext());
             }
         }
@@ -80,7 +84,8 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
                     int id = c.getInt(columnIndex.get("id"));
                     List<Item> items = getAllItemsById(id);
                     String nombre = c.getString(columnIndex.get("nombre"));
-                    shoppingLists.add(new ShoppingList(id, items, nombre));
+                    Date date = new Date(c.getLong(columnIndex.get("date")));
+                    shoppingLists.add(new ShoppingList(id, items, nombre, date));
                 } while (c.moveToNext());
             }
         }
@@ -89,8 +94,10 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     @Override
     public boolean update(ShoppingList shoppingList) {
-        String query = "UPDATE ShoppingList SET nombre = ? WHERE id = ?";
-        String[] args = new String[]{shoppingList.getNombre(), String.valueOf(shoppingList.getId())};
+        String query = "UPDATE ShoppingList SET nombre = ?, date = ? WHERE id = ?";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String stringDate = sdf.format(shoppingList.getDate());
+        String[] args = new String[]{shoppingList.getNombre(), stringDate, String.valueOf(shoppingList.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
             c.moveToFirst();
         }
@@ -111,8 +118,10 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     @Override
     public boolean insert(ShoppingList shoppingList) {
-        String query = "INSERT INTO ShoppingList (nombre) VALUES (?)";
-        String[] args = new String[]{shoppingList.getNombre()};
+        String query = "INSERT INTO ShoppingList (nombre, date) VALUES (?, ?)";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String stringDate = sdf.format(shoppingList.getDate());
+        String[] args = new String[]{shoppingList.getNombre(), stringDate};
         try (Cursor c = db.rawQuery(query, args)) {
             insertAllItems(shoppingList, shoppingList.getItems());
             return c.moveToFirst();

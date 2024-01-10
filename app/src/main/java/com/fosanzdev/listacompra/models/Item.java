@@ -40,4 +40,12 @@ public class Item {
     public String getB64Image() {
         return b64Image;
     }
+
+    @Override
+    public String toString() {
+        if (category == null)
+            return nombre;
+        else
+            return nombre + " (" + category.getNombre() + ")";
+    }
 }

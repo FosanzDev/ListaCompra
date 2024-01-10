@@ -30,7 +30,8 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_SHOPPING_LIST =
             "CREATE TABLE ShoppingList (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "nombre TEXT NOT NULL" +
+                    "nombre TEXT NOT NULL," +
+                    "date DATE NOT NULL" +
                     ");";
 
     private static final String SQL_CREATE_TABLE_SHOPPING_LIST_ITEMS =

@@ -33,4 +33,9 @@ public class Category {
     public String getB64Image() {
         return b64Image;
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

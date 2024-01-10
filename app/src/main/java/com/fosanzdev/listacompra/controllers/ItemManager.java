@@ -63,4 +63,13 @@ public class ItemManager extends ArrayList<Item> {
         }
         return itemsByCategory;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Item item : this) {
+            sb.append(item.toString()).append("\n");
+        }
+        return sb.toString();
+    }
 }
