@@ -17,24 +17,25 @@ import com.fosanzdev.listacompra.models.Category;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 import com.fosanzdev.listacompra.ui.ShoppingListAdapter;
+import com.fosanzdev.listacompra.ui.fragments.ShoppingListsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShoppingListsFragment.IShoppingListFragmentListener {
+
+    ShoppingListSQLiteHelper helper;
+    SQLiteDatabase db;
+    private ShoppingListManager manager;
+    private ItemManager itemManager;
+    private CategoryManager categoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ShoppingListSQLiteHelper helper = ShoppingListSQLiteHelper.getInstance(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
-
-        ShoppingListManager manager = new ShoppingListManager(db);
-        ItemManager itemManager = new ItemManager(db);
-        CategoryManager categoryManager = new CategoryManager(db);
+        init();
 
         if (!ShoppingListSQLiteHelper.initialized){
             ArrayList<Category> categories = new ArrayList<>();
@@ -90,31 +91,27 @@ public class MainActivity extends AppCompatActivity {
 
             System.out.println("Initialized");
         }
+    }
 
-        // -----------------------------------
-        // FLOATING ACTION BUTTON (FAB) SETUP
-        // This will create a new ShoppingList
-        // -----------------------------------
-        FloatingActionButton fabAddShoppingList = findViewById(R.id.fabAddShoppingList);
-        fabAddShoppingList.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Nueva lista de la compra");
-            builder.setView(R.layout.new_shopping_list_dialog);
-            EditText etShoppingListName = findViewById(R.id.etShoppingListTitle);
+    public void init(){
+        helper = ShoppingListSQLiteHelper.getInstance(this);
+        db = helper.getWritableDatabase();
 
-            builder.setPositiveButton("Crear", (dialog, which) -> {
-                String shoppingListName = etShoppingListName.getText().toString();
-                ShoppingList shoppingList = new ShoppingList(shoppingListName);
-                manager.add(shoppingList);
-            });
+        manager = new ShoppingListManager(db);
+        itemManager = new ItemManager(db);
+        categoryManager = new CategoryManager(db);
+    }
 
-            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.cancel());
+    @Override
+    public void onShoppingListSelected(ShoppingList shoppingList) {
+        //TODO: Action onClick
+    }
 
-            builder.show();
-        });
-
-        RecyclerView rvShoppingLists = findViewById(R.id.rvShoppingLists);
-        rvShoppingLists.setAdapter(new ShoppingListAdapter(manager));
-        rvShoppingLists.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+    @Override
+    public ArrayList<ShoppingList> getShoppingLists() {
+        if (manager == null){
+            init();
+        }
+        return manager;
     }
 }
