@@ -12,6 +12,12 @@ public class Item {
 
     }
 
+    public Item(String nombre, Category category, String b64Image) {
+        this.nombre = nombre;
+        this.category = category;
+        this.b64Image = b64Image;
+    }
+
     public Item(int id, String nombre, Category category, String b64Image) {
         this.id = id;
         this.nombre = nombre;

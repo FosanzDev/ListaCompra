@@ -9,16 +9,32 @@ public class ShoppingList {
     private int id;
     private List<Item> items;
     private String nombre;
+    private ShoppingListManager manager;
 
     //Empty constructor
     public ShoppingList() {
+    }
 
+    public ShoppingList(String nombre, ShoppingListManager manager) {
+        this.nombre = nombre;
+        this.manager = manager;
     }
 
     public ShoppingList(int id, List<Item> items, String nombre) {
         this.id = id;
         this.items = items;
         this.nombre = nombre;
+    }
+
+    public ShoppingList(int id, List<Item> items, String nombre, ShoppingListManager manager) {
+        this.id = id;
+        this.items = items;
+        this.nombre = nombre;
+        this.manager = manager;
+    }
+
+    public void setManager(ShoppingListManager manager) {
+        this.manager = manager;
     }
 
     public int getId() {
@@ -31,17 +47,23 @@ public class ShoppingList {
 
     public void addItem(Item item) {
         items.add(item);
-        new ShoppingListDAO("ShoppingList").insertItem(this, item);
+        if (manager != null) {
+            manager.addItem(this, item);
+        }
     }
 
     public void removeItem(Item item){
         items.remove(item);
-        new ShoppingListDAO("ShoppingList").deleteItem(this, item);
+        if (manager != null) {
+            manager.deleteItem(this, item);
+        }
     }
 
     public void removeAllItems(){
         items.clear();
-        new ShoppingListDAO("ShoppingList").deleteAllItems(this);
+        if (manager != null) {
+            manager.deleteAllItems(this);
+        }
     }
 
     public String getNombre() {

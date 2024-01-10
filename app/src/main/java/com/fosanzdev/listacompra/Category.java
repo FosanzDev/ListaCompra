@@ -11,6 +11,11 @@ public class Category {
 
     }
 
+    public Category(String nombre, String b64Image) {
+        this.nombre = nombre;
+        this.b64Image = b64Image;
+    }
+
     public Category(int id, String nombre, String b64Image) {
         this.id = id;
         this.nombre = nombre;
