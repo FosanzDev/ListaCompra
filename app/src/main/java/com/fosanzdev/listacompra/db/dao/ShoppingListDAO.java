@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,10 +58,15 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
                     String nombre = c.getString(columnIndex.get("nombre"));
                     int id = c.getInt(columnIndex.get("id"));
                     List<Item> items = getAllItemsById(id);
-                    Date date = new Date(c.getLong(columnIndex.get("date")));
+                    String stringDate = c.getString(columnIndex.get("date"));
+                    //String with format yyyy/MM/dd HH:mm:ss to Date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = sdf.parse(stringDate);
                     shoppingLists.add(new ShoppingList(id, items, nombre, date));
                 } while (c.moveToNext());
             }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
         return shoppingLists;
     }
@@ -84,10 +90,15 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
                     int id = c.getInt(columnIndex.get("id"));
                     List<Item> items = getAllItemsById(id);
                     String nombre = c.getString(columnIndex.get("nombre"));
-                    Date date = new Date(c.getLong(columnIndex.get("date")));
+                    String stringDate = c.getString(columnIndex.get("date"));
+                    //String with format yyyy/MM/dd HH:mm:ss to Date
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = sdf.parse(stringDate);
                     shoppingLists.add(new ShoppingList(id, items, nombre, date));
                 } while (c.moveToNext());
             }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
         return shoppingLists;
     }
@@ -96,6 +107,7 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
     public boolean update(ShoppingList shoppingList) {
         String query = "UPDATE ShoppingList SET nombre = ?, date = ? WHERE id = ?";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
         String stringDate = sdf.format(shoppingList.getDate());
         String[] args = new String[]{shoppingList.getNombre(), stringDate, String.valueOf(shoppingList.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
