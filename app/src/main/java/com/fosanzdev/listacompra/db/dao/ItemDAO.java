@@ -3,8 +3,8 @@ package com.fosanzdev.listacompra.db.dao;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.fosanzdev.listacompra.Category;
-import com.fosanzdev.listacompra.Item;
+import com.fosanzdev.listacompra.models.Category;
+import com.fosanzdev.listacompra.models.Item;
 
 import java.util.ArrayList;
 import java.util.List;

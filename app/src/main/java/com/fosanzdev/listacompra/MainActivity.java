@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.fosanzdev.listacompra.controllers.CategoryManager;
+import com.fosanzdev.listacompra.controllers.ItemManager;
+import com.fosanzdev.listacompra.controllers.ShoppingListManager;
 import com.fosanzdev.listacompra.db.ShoppingListSQLiteHelper;
 
 public class MainActivity extends AppCompatActivity {

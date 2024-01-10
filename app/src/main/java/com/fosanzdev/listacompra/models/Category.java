@@ -1,4 +1,4 @@
-package com.fosanzdev.listacompra;
+package com.fosanzdev.listacompra.models;
 
 public class Category {
 

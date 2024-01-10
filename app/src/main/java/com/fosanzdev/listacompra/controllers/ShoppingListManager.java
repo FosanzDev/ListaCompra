@@ -1,8 +1,10 @@
-package com.fosanzdev.listacompra;
+package com.fosanzdev.listacompra.controllers;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
+import com.fosanzdev.listacompra.models.Item;
+import com.fosanzdev.listacompra.models.ShoppingList;
 
 import java.util.ArrayList;
 import java.util.List;

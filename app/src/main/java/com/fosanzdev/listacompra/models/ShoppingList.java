@@ -1,6 +1,6 @@
-package com.fosanzdev.listacompra;
+package com.fosanzdev.listacompra.models;
 
-import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
+import com.fosanzdev.listacompra.controllers.ShoppingListManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,10 @@
-package com.fosanzdev.listacompra;
+package com.fosanzdev.listacompra.controllers;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.db.dao.ItemDAO;
+import com.fosanzdev.listacompra.models.Category;
+import com.fosanzdev.listacompra.models.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +52,15 @@ public class ItemManager extends ArrayList<Item> {
             new ItemDAO(db).insert(item);
         }
         return result;
+    }
+
+    public List<Item> getItemsByCategory(Category category) {
+        List<Item> itemsByCategory = new ArrayList<>();
+        for (Item item : this) {
+            if (item.getCategory() == category) {
+                itemsByCategory.add(item);
+            }
+        }
+        return itemsByCategory;
     }
 }
