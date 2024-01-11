@@ -1,5 +1,6 @@
 package com.fosanzdev.listacompra.controllers;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.db.dao.ItemDAO;
@@ -25,10 +26,15 @@ public class ItemManager extends ArrayList<Item> {
      */
     private void init(){
         ItemDAO dao = new ItemDAO(db);
-        List<Item> items = dao.findAll();
-        if (items != null) {
-            for (Item item : items) {
-                addSilent(item);
+        String getLastIndexQuery = "SELECT MAX(id) FROM Items";
+        Cursor c = db.rawQuery(getLastIndexQuery, null);
+        if (c.moveToFirst()) {
+            int lastIndex = c.getInt(0);
+            for (int i = 1; i <= lastIndex; i++) {
+                Item item = dao.findById(i);
+                if (item != null) {
+                    addSilent(item);
+                }
             }
         }
     }

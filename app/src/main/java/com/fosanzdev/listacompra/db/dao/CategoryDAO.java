@@ -75,7 +75,7 @@ public class CategoryDAO extends DAO<Category> {
     @Override
     public boolean update(Category category) {
         String query = "UPDATE Categories SET nombre = ?, b64Image = ? WHERE id = ?";
-        String[] args = new String[]{category.getName(), category.getImage(), String.valueOf(category.getId())};
+        String[] args = new String[]{category.getName(), category.getName(), String.valueOf(category.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
             return c.moveToFirst();
         }
@@ -93,7 +93,7 @@ public class CategoryDAO extends DAO<Category> {
     @Override
     public boolean insert(Category category) {
         String query = "INSERT INTO Categories (nombre, b64Image) VALUES (?, ?)";
-        String[] args = new String[]{category.getName(), category.getImage()};
+        String[] args = new String[]{category.getName(), category.getName()}  ;
         try (Cursor c = db.rawQuery(query, args)) {
             query = "SELECT id from Categories ORDER BY id DESC LIMIT 1";
             try (Cursor c2 = db.rawQuery(query, null)) {

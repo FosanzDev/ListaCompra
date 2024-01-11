@@ -25,7 +25,6 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "nombre TEXT NOT NULL," +
                     "fk_category INTEGER NOT NULL," +
-                    "b64Image TEXT NOT NULL," +
                     "FOREIGN KEY (fk_category) REFERENCES Categories(id)" +
                     ");";
 
@@ -43,6 +42,15 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY (fk_shopping_list) REFERENCES ShoppingList(id)," +
                     "FOREIGN KEY (fk_item) REFERENCES Items(id)," +
                     "PRIMARY KEY (fk_shopping_list, fk_item)" +
+                    ");";
+
+    private static final String SQL_CREATE_TABLE_ITEM_IMAGES =
+            "CREATE TABLE ItemImages (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "fk_item INTEGER NOT NULL," +
+                    "chunkIndex INTEGER NOT NULL," +
+                    "imageChunk BLOB NOT NULL," +
+                    "FOREIGN KEY (fk_item) REFERENCES Items(id)" +
                     ");";
 
 
@@ -63,6 +71,7 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_ITEMS);
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST);
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST_ITEMS);
+        db.execSQL(SQL_CREATE_TABLE_ITEM_IMAGES);
         initialized = false;
     }
 

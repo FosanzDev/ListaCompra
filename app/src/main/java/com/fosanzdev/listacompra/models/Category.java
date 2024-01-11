@@ -34,8 +34,8 @@ public class Category implements ItemViewFittable{
         return nombre;
     }
 
-    public String getImage() {
-        return b64Image;
+    public byte[] getImage() {
+        return null;
     }
 
     @Override

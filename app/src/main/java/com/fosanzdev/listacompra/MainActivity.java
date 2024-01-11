@@ -1,14 +1,10 @@
 package com.fosanzdev.listacompra;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.EditText;
 
 import com.fosanzdev.listacompra.controllers.CategoryManager;
 import com.fosanzdev.listacompra.controllers.ItemManager;
@@ -20,7 +16,6 @@ import com.fosanzdev.listacompra.models.ShoppingList;
 import com.fosanzdev.listacompra.ui.ShoppingListAdapter;
 import com.fosanzdev.listacompra.ui.fragments.ShoppingListDetailFragment;
 import com.fosanzdev.listacompra.ui.fragments.ShoppingListsFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -54,41 +49,41 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
             categoryManager.addAll(categories);
 
             ArrayList<Item> items = new ArrayList<>();
-            items.add(new Item("Manzana", categoryManager.get(0), "img"));
-            items.add(new Item("Pera", categoryManager.get(0), "img"));
-            items.add(new Item("Plátano", categoryManager.get(0), "img"));
+            items.add(new Item("Manzana", categoryManager.get(0), Utils.webpToByteArray(R.drawable.manzana, this)));
+            items.add(new Item("Pera", categoryManager.get(0), Utils.webpToByteArray(R.drawable.pera, this)));
+            items.add(new Item("Platano", categoryManager.get(0), Utils.webpToByteArray(R.drawable.platano, this)));
 
-            items.add(new Item("Lechuga", categoryManager.get(1), "img"));
-            items.add(new Item("Tomate", categoryManager.get(1), "img"));
-            items.add(new Item("Cebolla", categoryManager.get(1), "img"));
+            items.add(new Item("Lechuga", categoryManager.get(1), Utils.webpToByteArray(R.drawable.lechuga, this)));
+            items.add(new Item("Tomate", categoryManager.get(1), Utils.webpToByteArray(R.drawable.tomate, this)));
+            items.add(new Item("Cebolla", categoryManager.get(1), Utils.webpToByteArray(R.drawable.cebolla, this)));
 
-            items.add(new Item("Pollo", categoryManager.get(2), "img"));
-            items.add(new Item("Ternera", categoryManager.get(2), "img"));
-            items.add(new Item("Cerdo", categoryManager.get(2), "img"));
+            items.add(new Item("Pollo", categoryManager.get(2), Utils.webpToByteArray(R.drawable.pollo, this)));
+            items.add(new Item("Ternera", categoryManager.get(2), Utils.webpToByteArray(R.drawable.ternera, this)));
+            items.add(new Item("Cerdo", categoryManager.get(2), Utils.webpToByteArray(R.drawable.cerdo, this)));
 
-            items.add(new Item("Salmón", categoryManager.get(3), "img"));
-            items.add(new Item("Bacalao", categoryManager.get(3), "img"));
-            items.add(new Item("Atún", categoryManager.get(3), "img"));
+            items.add(new Item("Salmon", categoryManager.get(3), Utils.webpToByteArray(R.drawable.salmon, this)));
+            items.add(new Item("Bacalao", categoryManager.get(3), Utils.webpToByteArray(R.drawable.bacalao, this)));
+            items.add(new Item("Atún", categoryManager.get(3), Utils.webpToByteArray(R.drawable.atun, this)));
 
-            items.add(new Item("Leche", categoryManager.get(4), "img"));
-            items.add(new Item("Queso", categoryManager.get(4), "img"));
-            items.add(new Item("Yogur", categoryManager.get(4), "img"));
+            items.add(new Item("Leche", categoryManager.get(4), Utils.webpToByteArray(R.drawable.leche, this)));
+            items.add(new Item("Queso", categoryManager.get(4), Utils.webpToByteArray(R.drawable.queso, this)));
+            items.add(new Item("Yogur", categoryManager.get(4), Utils.webpToByteArray(R.drawable.yogur, this)));
 
-            items.add(new Item("Agua", categoryManager.get(5), "img"));
-            items.add(new Item("Cerveza", categoryManager.get(5), "img"));
-            items.add(new Item("Vino", categoryManager.get(5), "img"));
+            items.add(new Item("Agua", categoryManager.get(5), Utils.webpToByteArray(R.drawable.agua, this)));
+            items.add(new Item("Cerveza", categoryManager.get(5), Utils.webpToByteArray(R.drawable.cerveza, this)));
+            items.add(new Item("Vino", categoryManager.get(5), Utils.webpToByteArray(R.drawable.vino, this)));
 
-            items.add(new Item("Detergente", categoryManager.get(6), "img"));
-            items.add(new Item("Suavizante", categoryManager.get(6), "img"));
-            items.add(new Item("Lejía", categoryManager.get(6), "img"));
+            items.add(new Item("Detergente", categoryManager.get(6), Utils.webpToByteArray(R.drawable.detergente, this)));
+            items.add(new Item("Suavizante", categoryManager.get(6), Utils.webpToByteArray(R.drawable.suavizante, this)));
+            items.add(new Item("Lejia", categoryManager.get(6), Utils.webpToByteArray(R.drawable.lejia, this)));
 
-            items.add(new Item("Papel higiénico", categoryManager.get(7), "img"));
-            items.add(new Item("Gel", categoryManager.get(7), "img"));
-            items.add(new Item("Champú", categoryManager.get(7), "img"));
+            items.add(new Item("Papel higienico", categoryManager.get(7), Utils.webpToByteArray(R.drawable.papel_higienico, this)));
+            items.add(new Item("Gel", categoryManager.get(7), Utils.webpToByteArray(R.drawable.gel, this)));
+            items.add(new Item("Champu", categoryManager.get(7), Utils.webpToByteArray(R.drawable.champu, this)));
 
-            items.add(new Item("Pan", categoryManager.get(8), "img"));
-            items.add(new Item("Huevos", categoryManager.get(8), "img"));
-            items.add(new Item("Arroz", categoryManager.get(8), "img"));
+            items.add(new Item("Pan", categoryManager.get(8), Utils.webpToByteArray(R.drawable.pan, this)));
+            items.add(new Item("Huevos", categoryManager.get(8), Utils.webpToByteArray(R.drawable.huevos, this)));
+            items.add(new Item("Arroz", categoryManager.get(8), Utils.webpToByteArray(R.drawable.arroz, this)));
 
             itemManager.addAll(items);
 
@@ -99,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
     public void init() {
         helper = ShoppingListSQLiteHelper.getInstance(this);
         db = helper.getWritableDatabase();
-
         fcvContainer = findViewById(R.id.fcvContainer);
 
         manager = new ShoppingListManager(db);

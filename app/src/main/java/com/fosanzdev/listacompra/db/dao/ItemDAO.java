@@ -1,17 +1,23 @@
 package com.fosanzdev.listacompra.db.dao;
 
 import android.database.Cursor;
+import android.database.CursorWindow;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Base64;
 
+import com.fosanzdev.listacompra.Utils;
 import com.fosanzdev.listacompra.models.Category;
 import com.fosanzdev.listacompra.models.Item;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class ItemDAO extends DAO<Item> {
     private static final String TABLE_NAME = "Items";
+    private static final int CHUNK_SIZE = 1024;
 
     public ItemDAO(SQLiteDatabase db) {
         super(TABLE_NAME, db);
@@ -24,8 +30,8 @@ public class ItemDAO extends DAO<Item> {
             if (c.moveToFirst()) {
                 String nombre = c.getString(columnIndex.get("nombre"));
                 Category category = new CategoryDAO(db).findById(c.getInt(columnIndex.get("fk_category")));
-                String b64Image = c.getString(columnIndex.get("b64Image"));
-                return new Item(id, nombre, category, b64Image);
+                byte[] image = retrieveImageFromId(id);
+                return new Item(id, nombre, category, image);
             }
         }
         return null;
@@ -40,12 +46,25 @@ public class ItemDAO extends DAO<Item> {
                     int id = c.getInt(columnIndex.get("id"));
                     String nombre = c.getString(columnIndex.get("nombre"));
                     Category category = new CategoryDAO(db).findById(c.getInt(columnIndex.get("fk_category")));
-                    String b64Image = c.getString(columnIndex.get("b64Image"));
-                    items.add(new Item(id, nombre, category, b64Image));
+                    byte[] image = retrieveImageFromId(id);
+                    items.add(new Item(id, nombre, category, image));
                 } while (c.moveToNext());
             }
         }
         return items;
+    }
+
+    private byte[] retrieveImageFromId(int id){
+        ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+        String query = "SELECT imageChunk FROM ItemImages WHERE fk_item = ? ORDER BY chunkIndex";
+        String[] args = new String[]{String.valueOf(id)};
+        try (Cursor c = db.rawQuery(query, args)) {
+            while (c.moveToNext()) {
+                byte[] chunk = c.getBlob(0);
+                imageStream.write(chunk, 0, chunk.length);
+            }
+        }
+        return imageStream.toByteArray();
     }
 
     @Override
@@ -66,8 +85,8 @@ public class ItemDAO extends DAO<Item> {
                     int id = c.getInt(columnIndex.get("id"));
                     String nombre = c.getString(columnIndex.get("nombre"));
                     Category category = new CategoryDAO(db).findById(c.getInt(columnIndex.get("fk_category")));
-                    String b64Image = c.getString(columnIndex.get("b64Image"));
-                    items.add(new Item(id, nombre, category, b64Image));
+                    byte[] image = retrieveImageFromId(id); //c.getString(columnIndex.get("b64Image"));
+                    items.add(new Item(id, nombre, category, image));
                 } while (c.moveToNext());
             }
         }
@@ -76,9 +95,27 @@ public class ItemDAO extends DAO<Item> {
 
     @Override
     public boolean update(Item item) {
-        String query = "UPDATE Items SET nombre = ?, fk_category = ?, b64Image = ? WHERE id = ?";
-        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId()), item.getImage(), String.valueOf(item.getId())};
+        String query = "UPDATE Items SET nombre = ?, fk_category = ? WHERE id = ?";
+        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId()), String.valueOf(item.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
+            // Delete old image chunks
+            String deleteImageQuery = "DELETE FROM ItemImages WHERE fk_item = ?";
+            String[] deleteImageQueryArgs = new String[]{String.valueOf(item.getId())};
+            db.execSQL(deleteImageQuery, deleteImageQueryArgs);
+
+            // Insert new image chunks
+            byte[] imageBytes = item.getImage();
+            int chunkIndex = 0;
+            for (int i = 0; i < imageBytes.length; i += CHUNK_SIZE) {
+                int end = Math.min(i + CHUNK_SIZE, imageBytes.length);
+                byte[] chunk = Arrays.copyOfRange(imageBytes, i, end);
+
+                String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
+                Object[] insertImageQueryArgs = new Object[]{item.getId(), chunkIndex, chunk};
+                db.execSQL(insertImageQuery, insertImageQueryArgs);
+                chunkIndex++;
+            }
+
             return c.moveToFirst();
         }
     }
@@ -94,10 +131,24 @@ public class ItemDAO extends DAO<Item> {
 
     @Override
     public boolean insert(Item item) {
-        String query = "INSERT INTO Items (nombre, fk_category, b64Image) VALUES (?, ?, ?)";
-        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId()), item.getImage()};
+        String query = "INSERT INTO Items (nombre, fk_category) VALUES (?, ?)";
+        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId())};
         try (Cursor c = db.rawQuery(query, args)) {
-            query = "SELECT id FROM Categories ORDER BY id DESC LIMIT 1";
+
+            // Split the image into chunks and store each chunk in a separate row
+            byte[] imageBytes = item.getImage();
+            int chunkIndex = 0;
+            for (int i = 0; i < imageBytes.length; i += CHUNK_SIZE) {
+                int end = Math.min(i + CHUNK_SIZE, imageBytes.length);
+                byte[] chunk = Arrays.copyOfRange(imageBytes, i, end);
+
+                String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
+                Object[] insertImageQueryArgs = new Object[]{item.getId(), chunkIndex, chunk};
+                db.execSQL(insertImageQuery, insertImageQueryArgs);
+                chunkIndex++;
+            }
+
+            query = "SELECT id FROM Items ORDER BY id DESC LIMIT 1";
             try (Cursor c2 = db.rawQuery(query, null)) {
                 if (c2.moveToFirst()) {
                     item.setId(c2.getInt(0));

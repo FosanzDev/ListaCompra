@@ -1,5 +1,6 @@
 package com.fosanzdev.listacompra.ui;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,9 +57,9 @@ public class ShoppingListItemsAdapter extends RecyclerView.Adapter<ShoppingListI
 
         public void bind(ItemViewFittable item){
             //Transform Base64 to Bitmap and set it to ImageView
-            String b64Image = item.getImage();
-            if (b64Image != null) {
-                ivItem.setImageBitmap(Utils.base64ToBitmap(b64Image));
+            Bitmap image = Utils.byteArrayToBitmap(item.getImage());
+            if (image != null) {
+                ivItem.setImageBitmap(image);
             }
             tvItemName.setText(item.getName());
         }
