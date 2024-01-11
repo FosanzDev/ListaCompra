@@ -53,6 +53,15 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY (fk_item) REFERENCES Items(id)" +
                     ");";
 
+    private static final String SQL_CREATE_TABLE_CATEGORY_IMAGES =
+            "CREATE TABLE CategoryImages (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "fk_category INTEGER NOT NULL," +
+                    "chunkIndex INTEGER NOT NULL," +
+                    "imageChunk BLOB NOT NULL," +
+                    "FOREIGN KEY (fk_category) REFERENCES Categories(id)" +
+                    ");";
+
 
     public static synchronized ShoppingListSQLiteHelper getInstance(@Nullable Context context) {
         if (instance == null) {
@@ -72,6 +81,7 @@ public class ShoppingListSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST);
         db.execSQL(SQL_CREATE_TABLE_SHOPPING_LIST_ITEMS);
         db.execSQL(SQL_CREATE_TABLE_ITEM_IMAGES);
+        db.execSQL(SQL_CREATE_TABLE_CATEGORY_IMAGES);
         initialized = false;
     }
 

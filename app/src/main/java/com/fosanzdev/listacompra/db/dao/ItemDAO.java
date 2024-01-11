@@ -62,10 +62,8 @@ public class ItemDAO extends DAO<Item> {
         String[] args = new String[]{String.valueOf(id-1)}; //TODO: FIX THISSSS
         try (Cursor c = db.rawQuery(query, args)) {
             while (c.moveToNext()) {
-                System.out.println("Has next");
                 byte[] chunk = c.getBlob(0);
                 imageStream.write(chunk, 0, chunk.length);
-                System.out.println("Chunk length: " + chunk.length);
             }
         }
         return imageStream.toByteArray();
@@ -110,12 +108,12 @@ public class ItemDAO extends DAO<Item> {
             // Insert new image chunks
             byte[] imageBytes = item.getImage();
             int chunkIndex = 0;
-            for (int i = 0; i < imageBytes.length; i += CHUNK_SIZE) {
-                int end = Math.min(i + CHUNK_SIZE, imageBytes.length);
-                byte[] chunk = Arrays.copyOfRange(imageBytes, i, end);
+            while (chunkIndex < imageBytes.length) {
+                int end = Math.min(chunkIndex + CHUNK_SIZE, imageBytes.length);
+                byte[] chunk = Arrays.copyOfRange(imageBytes, chunkIndex, end);
 
                 String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
-                Object[] insertImageQueryArgs = new Object[]{item.getId(), chunkIndex, chunk};
+                String[] insertImageQueryArgs = new String[]{String.valueOf(item.getId()), String.valueOf(chunkIndex), Base64.encodeToString(chunk, Base64.DEFAULT)};
                 db.execSQL(insertImageQuery, insertImageQueryArgs);
                 chunkIndex++;
             }
@@ -129,6 +127,9 @@ public class ItemDAO extends DAO<Item> {
         String query = "DELETE FROM Items WHERE id = ?";
         String[] args = new String[]{String.valueOf(item.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
+            String deleteImageQuery = "DELETE FROM ItemImages WHERE fk_item = ?";
+            String[] deleteImageArgs = new String[]{String.valueOf(item.getId())};
+            db.execSQL(deleteImageQuery, deleteImageArgs);
             return c.moveToFirst();
         }
     }
@@ -149,12 +150,12 @@ public class ItemDAO extends DAO<Item> {
             // Split the image into chunks and store each chunk in a separate row
             byte[] imageBytes = item.getImage();
             int chunkIndex = 0;
-            for (int i = 0; i < imageBytes.length; i += CHUNK_SIZE) {
-                int end = Math.min(i + CHUNK_SIZE, imageBytes.length);
-                byte[] chunk = Arrays.copyOfRange(imageBytes, i, end);
+            while (chunkIndex < imageBytes.length) {
+                int end = Math.min(chunkIndex + CHUNK_SIZE, imageBytes.length);
+                byte[] chunk = Arrays.copyOfRange(imageBytes, chunkIndex, end);
 
                 String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
-                Object[] insertImageQueryArgs = new Object[]{item.getId(), chunkIndex, chunk};
+                String[] insertImageQueryArgs = new String[]{String.valueOf(item.getId()), String.valueOf(chunkIndex), Base64.encodeToString(chunk, Base64.DEFAULT)};
                 db.execSQL(insertImageQuery, insertImageQueryArgs);
                 chunkIndex++;
             }

@@ -39,15 +39,15 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
 
         if (!ShoppingListSQLiteHelper.initialized) {
             ArrayList<Category> categories = new ArrayList<>();
-            categories.add(new Category("Frutas", "img"));
-            categories.add(new Category("Verduras", "img"));
-            categories.add(new Category("Carnes", "img"));
-            categories.add(new Category("Pescados", "img"));
-            categories.add(new Category("Lácteos", "img"));
-            categories.add(new Category("Bebidas", "img"));
-            categories.add(new Category("Droguería", "img"));
-            categories.add(new Category("Higiene", "img"));
-            categories.add(new Category("Otros", "img"));
+            categories.add(new Category("Frutas", Utils.webpToByteArray(R.drawable.frutas, this)));
+            categories.add(new Category("Verduras", Utils.webpToByteArray(R.drawable.verduras, this)));
+            categories.add(new Category("Carnes", Utils.webpToByteArray(R.drawable.carnes, this)));
+            categories.add(new Category("Pescados", Utils.webpToByteArray(R.drawable.pescados, this)));
+            categories.add(new Category("Lácteos", Utils.webpToByteArray(R.drawable.lacteos, this)));
+            categories.add(new Category("Bebidas", Utils.webpToByteArray(R.drawable.bebidas, this)));
+            categories.add(new Category("Droguería", Utils.webpToByteArray(R.drawable.drogueria, this)));
+            categories.add(new Category("Higiene", Utils.webpToByteArray(R.drawable.higiene, this)));
+            categories.add(new Category("Otros", Utils.webpToByteArray(R.drawable.otros, this)));
             categoryManager.addAll(categories);
 
             ArrayList<Item> items = new ArrayList<>();

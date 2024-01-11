@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.models.Category;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class CategoryDAO extends DAO<Category> {
 
     private static final String TABLE_NAME = "Categories";
+    private static final int CHUNK_SIZE = 1024;
 
 
     public CategoryDAO(SQLiteDatabase db) {
@@ -24,8 +26,8 @@ public class CategoryDAO extends DAO<Category> {
         try (Cursor c = db.rawQuery("SELECT * FROM Categories WHERE id = ?", args)) {
             if (c.moveToFirst()) {
                 String nombre = c.getString(columnIndex.get("nombre"));
-                String b64Image = c.getString(columnIndex.get("b64Image"));
-                return new Category(id, nombre, b64Image);
+                byte[] image = retrieveImageFromId(id);
+                return new Category(id, nombre, image);
             }
         }
         return null;
@@ -39,12 +41,23 @@ public class CategoryDAO extends DAO<Category> {
                 do {
                     int id = c.getInt(columnIndex.get("id"));
                     String nombre = c.getString(columnIndex.get("nombre"));
-                    String b64Image = c.getString(columnIndex.get("b64Image"));
-                    categories.add(new Category(id, nombre, b64Image));
+                    byte[] image = retrieveImageFromId(id);
+                    categories.add(new Category(id, nombre, image));
                 } while (c.moveToNext());
             }
         }
         return categories;
+    }
+
+    private byte[] retrieveImageFromId(int id){
+        ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+        try (Cursor c = db.rawQuery("SELECT imageChunk FROM CategoryImages WHERE fk_category = ?", new String[]{String.valueOf(id)})) {
+            while (c.moveToNext()) {
+                byte[] chunk = c.getBlob(0);
+                imageStream.write(chunk, 0, chunk.length);
+            }
+        }
+        return imageStream.toByteArray();
     }
 
     @Override
@@ -64,8 +77,8 @@ public class CategoryDAO extends DAO<Category> {
                 do {
                     int id = c.getInt(columnIndex.get("id"));
                     String nombre = c.getString(columnIndex.get("nombre"));
-                    String b64Image = c.getString(columnIndex.get("b64Image"));
-                    categories.add(new Category(id, nombre, b64Image));
+                    byte[] image = retrieveImageFromId(id);
+                    categories.add(new Category(id, nombre, image));
                 } while (c.moveToNext());
             }
         }
@@ -77,6 +90,24 @@ public class CategoryDAO extends DAO<Category> {
         String query = "UPDATE Categories SET nombre = ?, b64Image = ? WHERE id = ?";
         String[] args = new String[]{category.getName(), category.getName(), String.valueOf(category.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
+
+            String deleteImageQuery = "DELETE FROM CategoryImages WHERE fk_category = ?";
+            String[] deleteImageArgs = new String[]{String.valueOf(category.getId())};
+            db.execSQL(deleteImageQuery, deleteImageArgs);
+
+            // Insert new image chunks
+            byte[] image = category.getImage();
+            int chunkIndex = 0;
+            while (chunkIndex < image.length) {
+                int chunkSize = Math.min(image.length - chunkIndex, CHUNK_SIZE);
+                byte[] chunk = new byte[chunkSize];
+
+                String insertImageQuery = "INSERT INTO CategoryImages (fk_category, chunkIndex, imageChunk) VALUES (?, ?, ?)";
+                String[] insertImageArgs = new String[]{String.valueOf(category.getId()), String.valueOf(chunkIndex), new String(chunk)};
+                db.execSQL(insertImageQuery, insertImageArgs);
+                chunkIndex += CHUNK_SIZE;
+            }
+
             return c.moveToFirst();
         }
     }
@@ -86,6 +117,9 @@ public class CategoryDAO extends DAO<Category> {
         String query = "DELETE FROM Categories WHERE id = ?";
         String[] args = new String[]{String.valueOf(category.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
+            String deleteImageQuery = "DELETE FROM CategoryImages WHERE fk_category = ?";
+            String[] deleteImageArgs = new String[]{String.valueOf(category.getId())};
+            db.execSQL(deleteImageQuery, deleteImageArgs);
             return c.moveToFirst();
         }
     }
@@ -101,6 +135,20 @@ public class CategoryDAO extends DAO<Category> {
                     category.setId(c2.getInt(0));
                 }
             }
+
+            byte[] imageBytes = category.getImage();
+            int chunkIndex = 0;
+            while (chunkIndex < imageBytes.length) {
+                int end = Math.min(chunkIndex + CHUNK_SIZE, imageBytes.length);
+                byte[] chunk = new byte[end - chunkIndex];
+                System.arraycopy(imageBytes, chunkIndex, chunk, 0, end - chunkIndex);
+
+                String insertImageQuery = "INSERT INTO CategoryImages (fk_category, chunkIndex, imageChunk) VALUES (?, ?, ?)";
+                String[] insertImageQueryArgs = new String[]{String.valueOf(category.getId()), String.valueOf(chunkIndex), new String(chunk)};
+                db.execSQL(insertImageQuery, insertImageQueryArgs);
+                chunkIndex++;
+            }
+
             return c.moveToFirst();
         }
     }

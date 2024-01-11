@@ -4,22 +4,22 @@ public class Category implements ItemViewFittable{
 
     private int id;
     private String nombre;
-    private String b64Image;
+    private byte[] image;
 
     //Empty constructor
     public Category() {
 
     }
 
-    public Category(String nombre, String b64Image) {
+    public Category(String nombre, byte[] image) {
         this.nombre = nombre;
-        this.b64Image = b64Image;
+        this.image = image;
     }
 
-    public Category(int id, String nombre, String b64Image) {
+    public Category(int id, String nombre, byte[] image) {
         this.id = id;
         this.nombre = nombre;
-        this.b64Image = b64Image;
+        this.image = image;
     }
 
     public void setId(int id) {
@@ -35,7 +35,7 @@ public class Category implements ItemViewFittable{
     }
 
     public byte[] getImage() {
-        return null;
+        return image;
     }
 
     @Override
