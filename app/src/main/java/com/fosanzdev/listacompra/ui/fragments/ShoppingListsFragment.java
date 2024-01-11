@@ -24,7 +24,6 @@ import java.util.ArrayList;
 public class ShoppingListsFragment extends Fragment {
 
     public interface IShoppingListFragmentListener {
-        void onShoppingListSelected(ShoppingList shoppingList);
         ArrayList<ShoppingList> getShoppingLists();
     }
 
@@ -63,7 +62,7 @@ public class ShoppingListsFragment extends Fragment {
         });
 
         RecyclerView rvShoppingLists = v.findViewById(R.id.rvShoppingLists);
-        rvShoppingLists.setAdapter(new ShoppingListAdapter(shoppingLists));
+        rvShoppingLists.setAdapter(new ShoppingListAdapter(shoppingLists, context));
         rvShoppingLists.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
 
         return v;

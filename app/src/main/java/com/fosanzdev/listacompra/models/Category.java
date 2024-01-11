@@ -1,6 +1,6 @@
 package com.fosanzdev.listacompra.models;
 
-public class Category {
+public class Category implements ItemViewFittable{
 
     private int id;
     private String nombre;
@@ -30,11 +30,11 @@ public class Category {
         return id;
     }
 
-    public String getNombre() {
+    public String getName() {
         return nombre;
     }
 
-    public String getB64Image() {
+    public String getImage() {
         return b64Image;
     }
 

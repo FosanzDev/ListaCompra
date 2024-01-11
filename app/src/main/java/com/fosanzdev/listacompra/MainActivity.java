@@ -2,6 +2,7 @@ package com.fosanzdev.listacompra;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,18 +18,20 @@ import com.fosanzdev.listacompra.models.Category;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 import com.fosanzdev.listacompra.ui.ShoppingListAdapter;
+import com.fosanzdev.listacompra.ui.fragments.ShoppingListDetailFragment;
 import com.fosanzdev.listacompra.ui.fragments.ShoppingListsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements ShoppingListsFragment.IShoppingListFragmentListener {
+public class MainActivity extends AppCompatActivity implements ShoppingListsFragment.IShoppingListFragmentListener, ShoppingListDetailFragment.IShoppingListDetailFragmentListener, ShoppingListAdapter.ShoppingListViewHolder.IOnShoppingListClickListener {
 
     ShoppingListSQLiteHelper helper;
     SQLiteDatabase db;
     private ShoppingListManager manager;
     private ItemManager itemManager;
     private CategoryManager categoryManager;
+    FragmentContainerView fcvContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
 
         init();
 
-        if (!ShoppingListSQLiteHelper.initialized){
+        if (!ShoppingListSQLiteHelper.initialized) {
             ArrayList<Category> categories = new ArrayList<>();
             categories.add(new Category("Frutas", "img"));
             categories.add(new Category("Verduras", "img"));
@@ -93,9 +96,11 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
         }
     }
 
-    public void init(){
+    public void init() {
         helper = ShoppingListSQLiteHelper.getInstance(this);
         db = helper.getWritableDatabase();
+
+        fcvContainer = findViewById(R.id.fcvContainer);
 
         manager = new ShoppingListManager(db);
         itemManager = new ItemManager(db);
@@ -103,15 +108,25 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
     }
 
     @Override
-    public void onShoppingListSelected(ShoppingList shoppingList) {
-        //TODO: Action onClick
+    public void onShoppingListClick(ShoppingList shoppingList) {
+        System.out.println("Received: " + shoppingList);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fcvContainer, new ShoppingListDetailFragment(shoppingList))
+                .addToBackStack("shoppingListDetailFragment")
+                .commit();
+
     }
 
     @Override
     public ArrayList<ShoppingList> getShoppingLists() {
-        if (manager == null){
+        if (manager == null) {
             init();
         }
         return manager;
+    }
+
+    @Override
+    public void onShoppingListItemClicked(ShoppingList shoppingList, Item item) {
+        //TODO: Implementar
     }
 }

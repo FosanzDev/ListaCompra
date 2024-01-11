@@ -77,7 +77,7 @@ public class ItemDAO extends DAO<Item> {
     @Override
     public boolean update(Item item) {
         String query = "UPDATE Items SET nombre = ?, fk_category = ?, b64Image = ? WHERE id = ?";
-        String[] args = new String[]{item.getNombre(), String.valueOf(item.getCategory().getId()), item.getB64Image(), String.valueOf(item.getId())};
+        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId()), item.getImage(), String.valueOf(item.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
             return c.moveToFirst();
         }
@@ -95,7 +95,7 @@ public class ItemDAO extends DAO<Item> {
     @Override
     public boolean insert(Item item) {
         String query = "INSERT INTO Items (nombre, fk_category, b64Image) VALUES (?, ?, ?)";
-        String[] args = new String[]{item.getNombre(), String.valueOf(item.getCategory().getId()), item.getB64Image()};
+        String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId()), item.getImage()};
         try (Cursor c = db.rawQuery(query, args)) {
             query = "SELECT id FROM Categories ORDER BY id DESC LIMIT 1";
             try (Cursor c2 = db.rawQuery(query, null)) {
