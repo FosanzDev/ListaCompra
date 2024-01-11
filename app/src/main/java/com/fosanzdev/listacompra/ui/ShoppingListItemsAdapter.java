@@ -56,11 +56,11 @@ public class ShoppingListItemsAdapter extends RecyclerView.Adapter<ShoppingListI
         }
 
         public void bind(ItemViewFittable item){
-            //Transform Base64 to Bitmap and set it to ImageView
+            //Transform Base64 to Bitmap and set it to ImageVie
+
             Bitmap image = Utils.byteArrayToBitmap(item.getImage());
-            if (image != null) {
-                ivItem.setImageBitmap(image);
-            }
+            System.out.println("Image: " + image);
+            ivItem.setImageBitmap(image);
             tvItemName.setText(item.getName());
         }
     }

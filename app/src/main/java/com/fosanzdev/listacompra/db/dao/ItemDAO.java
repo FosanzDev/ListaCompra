@@ -39,9 +39,11 @@ public class ItemDAO extends DAO<Item> {
 
     @Override
     public List<Item> findAll() {
+        System.out.println("findAll");
         List<Item> items = new ArrayList<>();
         try (Cursor c = db.rawQuery("SELECT * FROM Items", null)) {
             if (c.moveToFirst()) {
+                System.out.println("Has next");
                 do {
                     int id = c.getInt(columnIndex.get("id"));
                     String nombre = c.getString(columnIndex.get("nombre"));
@@ -57,11 +59,13 @@ public class ItemDAO extends DAO<Item> {
     private byte[] retrieveImageFromId(int id){
         ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
         String query = "SELECT imageChunk FROM ItemImages WHERE fk_item = ? ORDER BY chunkIndex";
-        String[] args = new String[]{String.valueOf(id)};
+        String[] args = new String[]{String.valueOf(id-1)}; //TODO: FIX THISSSS
         try (Cursor c = db.rawQuery(query, args)) {
             while (c.moveToNext()) {
+                System.out.println("Has next");
                 byte[] chunk = c.getBlob(0);
                 imageStream.write(chunk, 0, chunk.length);
+                System.out.println("Chunk length: " + chunk.length);
             }
         }
         return imageStream.toByteArray();
@@ -135,6 +139,13 @@ public class ItemDAO extends DAO<Item> {
         String[] args = new String[]{item.getName(), String.valueOf(item.getCategory().getId())};
         try (Cursor c = db.rawQuery(query, args)) {
 
+            query = "SELECT id FROM Items ORDER BY id DESC LIMIT 1";
+            try (Cursor c2 = db.rawQuery(query, null)) {
+                if (c2.moveToFirst()) {
+                    item.setId(c2.getInt(0));
+                }
+            }
+
             // Split the image into chunks and store each chunk in a separate row
             byte[] imageBytes = item.getImage();
             int chunkIndex = 0;
@@ -148,12 +159,6 @@ public class ItemDAO extends DAO<Item> {
                 chunkIndex++;
             }
 
-            query = "SELECT id FROM Items ORDER BY id DESC LIMIT 1";
-            try (Cursor c2 = db.rawQuery(query, null)) {
-                if (c2.moveToFirst()) {
-                    item.setId(c2.getInt(0));
-                }
-            }
             return c.moveToFirst();
         }
     }

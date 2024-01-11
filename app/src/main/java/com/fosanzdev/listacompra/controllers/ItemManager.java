@@ -26,16 +26,9 @@ public class ItemManager extends ArrayList<Item> {
      */
     private void init(){
         ItemDAO dao = new ItemDAO(db);
-        String getLastIndexQuery = "SELECT MAX(id) FROM Items";
-        Cursor c = db.rawQuery(getLastIndexQuery, null);
-        if (c.moveToFirst()) {
-            int lastIndex = c.getInt(0);
-            for (int i = 1; i <= lastIndex; i++) {
-                Item item = dao.findById(i);
-                if (item != null) {
-                    addSilent(item);
-                }
-            }
+        List<Item> items = dao.findAll();
+        for (Item item : items) {
+            addSilent(item);
         }
     }
 

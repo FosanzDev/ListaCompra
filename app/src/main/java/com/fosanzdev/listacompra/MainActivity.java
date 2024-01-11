@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init();
+        if (manager == null) {
+            init();
+        }
 
         if (!ShoppingListSQLiteHelper.initialized) {
             ArrayList<Category> categories = new ArrayList<>();
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
     }
 
     public void init() {
+        System.out.println("Init run");
         helper = ShoppingListSQLiteHelper.getInstance(this);
         db = helper.getWritableDatabase();
         fcvContainer = findViewById(R.id.fcvContainer);
