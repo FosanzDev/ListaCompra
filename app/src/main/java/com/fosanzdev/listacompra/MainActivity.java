@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements ShoppingListsFrag
             categories.add(new Category("Bebidas", Utils.webpToByteArray(R.drawable.bebidas, this)));
             categories.add(new Category("Droguería", Utils.webpToByteArray(R.drawable.drogueria, this)));
             categories.add(new Category("Higiene", Utils.webpToByteArray(R.drawable.higiene, this)));
-            categories.add(new Category("Otros", Utils.webpToByteArray(R.drawable.otros, this)));
+            categories.add(new Category("Otros", Utils.webpToByteArray(R.drawable.huevos, this)));
             categoryManager.addAll(categories);
 
             ArrayList<Item> items = new ArrayList<>();

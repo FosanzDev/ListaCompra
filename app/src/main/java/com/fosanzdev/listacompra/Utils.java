@@ -16,7 +16,7 @@ public class Utils {
     public static byte[] webpToByteArray(int resourceId, Context context) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-        bitmap.compress(Bitmap.CompressFormat.WEBP, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.WEBP, 50, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
 }

@@ -146,7 +146,7 @@ public class CategoryDAO extends DAO<Category> {
                 String insertImageQuery = "INSERT INTO CategoryImages (fk_category, chunkIndex, imageChunk) VALUES (?, ?, ?)";
                 String[] insertImageQueryArgs = new String[]{String.valueOf(category.getId()), String.valueOf(chunkIndex), new String(chunk)};
                 db.execSQL(insertImageQuery, insertImageQueryArgs);
-                chunkIndex++;
+                chunkIndex += CHUNK_SIZE;
             }
 
             return c.moveToFirst();

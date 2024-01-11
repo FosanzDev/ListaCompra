@@ -115,7 +115,7 @@ public class ItemDAO extends DAO<Item> {
                 String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
                 String[] insertImageQueryArgs = new String[]{String.valueOf(item.getId()), String.valueOf(chunkIndex), Base64.encodeToString(chunk, Base64.DEFAULT)};
                 db.execSQL(insertImageQuery, insertImageQueryArgs);
-                chunkIndex++;
+                chunkIndex += CHUNK_SIZE;
             }
 
             return c.moveToFirst();
@@ -157,7 +157,7 @@ public class ItemDAO extends DAO<Item> {
                 String insertImageQuery = "INSERT INTO ItemImages (fk_item, chunkIndex, imageChunk) VALUES (?, ?, ?)";
                 String[] insertImageQueryArgs = new String[]{String.valueOf(item.getId()), String.valueOf(chunkIndex), Base64.encodeToString(chunk, Base64.DEFAULT)};
                 db.execSQL(insertImageQuery, insertImageQueryArgs);
-                chunkIndex++;
+                chunkIndex += CHUNK_SIZE;
             }
 
             return c.moveToFirst();
