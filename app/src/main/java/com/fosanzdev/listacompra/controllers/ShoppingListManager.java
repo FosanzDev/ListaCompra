@@ -2,6 +2,8 @@ package com.fosanzdev.listacompra.controllers;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
@@ -29,27 +31,37 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
         if (shoppingLists != null) {
             for (ShoppingList shoppingList : shoppingLists) {
                 addSilent(shoppingList);
-                shoppingList.setManager(this);
             }
         }
     }
 
+    public ShoppingList getShoppingList(int id) {
+        for (ShoppingList shoppingList : this) {
+            if (shoppingList.getId() == id) {
+                return shoppingList;
+            }
+        }
+        return null;
+    }
+
     public void addItem(ShoppingList shoppingList, Item item) {
+        shoppingList.addItem(item);
         new ShoppingListDAO(db).insertItem(shoppingList, item);
     }
 
-    public void deleteItem(ShoppingList shoppingList, Item item) {
+    public void removeItem(ShoppingList shoppingList, Item item) {
+        shoppingList.removeItem(item);
         new ShoppingListDAO(db).deleteItem(shoppingList, item);
     }
 
-    public void deleteAllItems(ShoppingList shoppingList) {
+    public void removeAllItems(ShoppingList shoppingList) {
+        shoppingList.getItems().clear();
         new ShoppingListDAO(db).deleteAllItems(shoppingList);
     }
 
     @Override
     public boolean remove(Object o) {
         boolean result = super.remove(o);
-        ((ShoppingList)o).setManager(null);
         if (result) {
             new ShoppingListDAO(db).delete((ShoppingList) o);
         }
@@ -63,7 +75,6 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
     @Override
     public boolean add(ShoppingList shoppingList) {
         boolean result = super.add(shoppingList);
-        shoppingList.setManager(this);
         if (result) {
             new ShoppingListDAO(db).insert(shoppingList);
         }
@@ -71,11 +82,10 @@ public class ShoppingListManager extends ArrayList<ShoppingList> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends ShoppingList> c) {
+    public boolean addAll(@NonNull Collection<? extends ShoppingList> c) {
         boolean result = super.addAll(c);
         if (result) {
             for (ShoppingList shoppingList : c) {
-                shoppingList.setManager(this);
                 new ShoppingListDAO(db).insert(shoppingList);
             }
         }

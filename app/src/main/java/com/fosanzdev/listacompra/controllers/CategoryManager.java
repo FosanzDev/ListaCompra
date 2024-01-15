@@ -32,6 +32,15 @@ public class CategoryManager extends ArrayList<Category> {
         }
     }
 
+    public Category getCategory(int id) {
+        for (Category category : this) {
+            if (category.getId() == id) {
+                return category;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean remove(Object o) {
         boolean result = super.remove(o);

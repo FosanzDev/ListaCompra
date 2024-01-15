@@ -135,6 +135,12 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
         String stringDate = sdf.format(shoppingList.getDate());
         String[] args = new String[]{shoppingList.getNombre(), stringDate};
         try (Cursor c = db.rawQuery(query, args)) {
+            query = "SELECT id FROM ShoppingList ORDER BY id DESC LIMIT 1";
+            try (Cursor c2 = db.rawQuery(query, null)) {
+                if (c2.moveToFirst()) {
+                    shoppingList.setId(c2.getInt(0));
+                }
+            }
             insertAllItems(shoppingList, shoppingList.getItems());
             return c.moveToFirst();
         }
@@ -156,6 +162,8 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
 
     public boolean insertItem(ShoppingList shoppingList, Item item){
         String query = "INSERT INTO ShoppingListItems (fk_shopping_list, fk_item) VALUES (?, ?)";
+        System.out.println("Inserting item " + item.getName() + " in shopping list " + shoppingList.getNombre());
+        System.out.println("Item id= " + item.getId() + " shopping list id= " + shoppingList.getId());
         String[] args = new String[]{String.valueOf(shoppingList.getId()), String.valueOf(item.getId())};
         try (Cursor c = db.rawQuery(query, args)) {
             return c.moveToFirst();
@@ -170,7 +178,9 @@ public class ShoppingListDAO extends DAO<ShoppingList>{
         for (Item item : items) {
             String[] args = new String[]{String.valueOf(shoppingList.getId()), String.valueOf(item.getId())};
             try (Cursor c = db.rawQuery(query, args)) {
-                c.moveToFirst();
+                if (c.moveToFirst()) {
+                    shoppingList.addItem(item);
+                }
             }
         }
         return true;

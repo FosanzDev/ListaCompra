@@ -65,6 +65,15 @@ public class ItemManager extends ArrayList<Item> {
         return result;
     }
 
+    public Item getItem(int id) {
+        for (Item item : this) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public List<Item> getItemsByCategory(Category category) {
         List<Item> itemsByCategory = new ArrayList<>();
         for (Item item : this) {

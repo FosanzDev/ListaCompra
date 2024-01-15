@@ -12,7 +12,6 @@ public class ShoppingList {
     private List<Item> items = new ArrayList<>();
     private String nombre;
     private Date date;
-    private ShoppingListManager manager;
 
     //Empty constructor
     public ShoppingList() {
@@ -30,17 +29,15 @@ public class ShoppingList {
         this.date = date;
     }
 
-    public ShoppingList(int id, List<Item> items, String nombre, ShoppingListManager manager) {
+    public ShoppingList(int id, List<Item> items, String nombre) {
         this.id = id;
         this.items = items;
         this.nombre = nombre;
-        this.manager = manager;
     }
 
-    public void setManager(ShoppingListManager manager) {
-        this.manager = manager;
+    public void setId(int id) {
+        this.id = id;
     }
-
     public int getId() {
         return id;
     }
@@ -55,23 +52,14 @@ public class ShoppingList {
 
     public void addItem(Item item) {
         items.add(item);
-        if (manager != null) {
-            manager.addItem(this, item);
-        }
     }
 
     public void removeItem(Item item){
         items.remove(item);
-        if (manager != null) {
-            manager.deleteItem(this, item);
-        }
     }
 
     public void removeAllItems(){
         items.clear();
-        if (manager != null) {
-            manager.deleteAllItems(this);
-        }
     }
 
     public String getNombre() {

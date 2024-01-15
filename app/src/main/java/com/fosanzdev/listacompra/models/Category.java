@@ -1,22 +1,24 @@
 package com.fosanzdev.listacompra.models;
 
+import android.graphics.Bitmap;
+
 public class Category implements ItemViewFittable{
 
     private int id;
     private String nombre;
-    private byte[] image;
+    private Bitmap image;
 
     //Empty constructor
     public Category() {
 
     }
 
-    public Category(String nombre, byte[] image) {
+    public Category(String nombre, Bitmap image) {
         this.nombre = nombre;
         this.image = image;
     }
 
-    public Category(int id, String nombre, byte[] image) {
+    public Category(int id, String nombre, Bitmap image) {
         this.id = id;
         this.nombre = nombre;
         this.image = image;
@@ -34,7 +36,7 @@ public class Category implements ItemViewFittable{
         return nombre;
     }
 
-    public byte[] getImage() {
+    public Bitmap getImage() {
         return image;
     }
 
