@@ -41,7 +41,7 @@ public class ShoppingListDetailFragment extends Fragment {
         View v = inflater.inflate(R.layout.shopping_list_detail_fragment, container, false);
 
         RecyclerView rvItems = v.findViewById(R.id.rvShoppingListItems);
-        adapter = new GridItemAdapter(shoppingList, context);
+        adapter = new GridItemAdapter(shoppingList.getItems(), (GridItemAdapter.ItemAdapter.IOnItemClickedListener) context);
         rvItems.setAdapter(adapter);
         rvItems.setLayoutManager(new GridLayoutManager(context, 3));
 

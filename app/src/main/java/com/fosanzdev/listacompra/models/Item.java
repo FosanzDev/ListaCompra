@@ -4,7 +4,9 @@ import android.graphics.Bitmap;
 
 import com.fosanzdev.listacompra.Utils;
 
-public class Item implements ItemViewFittable{
+import java.io.Serializable;
+
+public class Item implements ItemViewFittable, Serializable {
 
     private int id;
     private String nombre;

@@ -23,14 +23,13 @@ import java.util.List;
 public class GridItemAdapter extends RecyclerView.Adapter<GridItemAdapter.ItemAdapter>{
 
     //Manager extends ArrayList
-    private ShoppingList shoppingList;
     private List<? extends ItemViewFittable> items;
-    private Context context;
+    private ItemAdapter.IOnItemClickedListener listener;
 
-    public GridItemAdapter(ShoppingList shoppingList, Context context) {
-        this.shoppingList = shoppingList;
-        items = shoppingList.getItems();
-        this.context = context;
+
+    public GridItemAdapter(List<? extends ItemViewFittable> items, ItemAdapter.IOnItemClickedListener listener) {
+        this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,7 +37,7 @@ public class GridItemAdapter extends RecyclerView.Adapter<GridItemAdapter.ItemAd
     public GridItemAdapter.ItemAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.grid_recycler_item_view, parent, false);
-        return new ItemAdapter(v, context);
+        return new ItemAdapter(v, listener);
     }
 
     @Override
@@ -66,11 +65,11 @@ public class GridItemAdapter extends RecyclerView.Adapter<GridItemAdapter.ItemAd
         TextView tvItemName;
         IOnItemClickedListener listener;
 
-        public ItemAdapter(@NonNull View view, Context context) {
+        public ItemAdapter(@NonNull View view, IOnItemClickedListener listener) {
             super(view);
             ivItem = view.findViewById(R.id.ivItemImage);
             tvItemName = view.findViewById(R.id.textView2);
-            this.listener = (IOnItemClickedListener) context;
+            this.listener = listener;
             view.setOnClickListener(this);
         }
 

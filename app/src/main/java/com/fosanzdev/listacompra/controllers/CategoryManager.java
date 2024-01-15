@@ -4,14 +4,16 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.fosanzdev.listacompra.db.dao.CategoryDAO;
 import com.fosanzdev.listacompra.models.Category;
+import com.fosanzdev.listacompra.models.ItemViewFittable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CategoryManager extends ArrayList<Category> {
+public class CategoryManager extends ArrayList<Category> implements Serializable {
 
-    private SQLiteDatabase db;
+    private final SQLiteDatabase db;
 
     public CategoryManager(SQLiteDatabase db) {
         super();
@@ -81,5 +83,9 @@ public class CategoryManager extends ArrayList<Category> {
             sb.append(category.toString()).append("\n");
         }
         return sb.toString();
+    }
+
+    public List<ItemViewFittable> getItems() {
+        return new ArrayList<>(this);
     }
 }

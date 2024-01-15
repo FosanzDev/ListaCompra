@@ -7,11 +7,12 @@ import com.fosanzdev.listacompra.db.dao.ItemDAO;
 import com.fosanzdev.listacompra.models.Category;
 import com.fosanzdev.listacompra.models.Item;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ItemManager extends ArrayList<Item> {
+public class ItemManager extends ArrayList<Item> implements Serializable {
 
     private SQLiteDatabase db;
 
@@ -91,5 +92,9 @@ public class ItemManager extends ArrayList<Item> {
             sb.append(item.toString()).append("\n");
         }
         return sb.toString();
+    }
+
+    public List<Item> getItems() {
+        return new ArrayList<>(this);
     }
 }

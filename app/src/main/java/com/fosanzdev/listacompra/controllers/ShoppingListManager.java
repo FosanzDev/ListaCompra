@@ -8,11 +8,12 @@ import com.fosanzdev.listacompra.db.dao.ShoppingListDAO;
 import com.fosanzdev.listacompra.models.Item;
 import com.fosanzdev.listacompra.models.ShoppingList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ShoppingListManager extends ArrayList<ShoppingList> {
+public class ShoppingListManager extends ArrayList<ShoppingList> implements Serializable {
 
     private SQLiteDatabase db;
 
